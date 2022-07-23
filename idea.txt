@@ -1,0 +1,11 @@
+Descripción de la idea:
+
+Sistema para poder registrar la reposición que se hace en cada máquina vending.
+Que permita agregar una nueva locación
+Que pueda registrar recaudaciones
+
+Podríamos agregar a futuro gestión de precios
+
+
+
+
