@@ -81,66 +81,49 @@ const vueApp = new Vue({
                 ]
             }
         ],
-        
-        productosMaquina:[],
+        productos: [
+            {
+                id: 1,
+                nombre: "9 de Oro Salada",
+                proveedor: "Lucas",
+                cantidad: 0
+            },
+            {
+                id: 2,
+                nombre: "Sandwich Suprema",
+                proveedor: "Keila",
+                cantidad: 0
+            },
+            {
+                id: 3,
+                nombre: "Turron Mani",
+                proveedor: "Arcor",
+                cantidad: 0
+            }
+        ],
+
+
         selectedMaq: null
     },
     methods: {
         
         maqClick: function (index) {
             var maq = this.maquinas[index];
-            
-            this.productosMaquina = maq.productos;
             this.selectedMaq = maq;
             $('#addProductModal').modal();
         },
         
         saveProductsAdded: function () {
             
-            var _this = this;
-            
-            //console.log('Entramos a guardar los productos');
-            
-            //console.log(this.productosMaquina);
-            
-            console.log('sumar a :' + selectedMaq.productos[0] + 'la cantidad de ' + this.productosMaquina[0]); 
-            /*var user = this.users[this.pointsToIndex];
-            var points = parseInt(this.pointsToAdd);
-            
-            user.points += points;
-            
-            var pointsTxt = (points>0) ? '+'+points : '-' + points;
-            
-            if (points > 0) {
-                var msg = 'Muy bien *' + user.nickname + '*! Has recibido un +' + points;
-            } else {
-                var msg = 'Uhh *' + user.nickname + '*! Te aplicaorn un -' + points;
-            }
-            
-            
-            this.loading = true;
-            
-            
-            firebase.database().ref().child('users')
-            .child(user.uid)
-            .update({
-                points: user.points
-            }).then(function () {
-                _this.loading = false;
-                _this.$toasted.show("Bien ahi Lince!!", {
-                    theme: "bubble",
-                    position: "bottom-center",
-                    duration : 5000
-                });
-                
-                _this.pointsAdded = encodeURIComponent(msg + ': ' + _this.form.reason + '. http://masturpoints-app.firebaseapp.com');
-            }).catch(function () {
-                _this.loading = false;
-                $('#addPointsModal').modal('hide');
+            //console.log( this.selectedMaq.productos);
+
+            this.productos.forEach( prod => {
+                if(prod.cantidad < 0 || prod.cantidad === "")        return; 
+
+                prodASumar = this.selectedMaq.productos.find(e => e.id == prod.id);
+                prodASumar.cantidad += prod.cantidad; 
+                console.log(prodASumar.cantidad) ;              
             });
-            
-            this.saveLog(user, points, this.form.reason);*/
-            
         },
         
         

@@ -59,8 +59,8 @@
                     </div>
                     <div class="modal-body">
                         <div class="form-group">
-                            <div class="maq mb-3" v-for="(producto  , index) in productosMaquina">
-                                <input v-model.number="producto[index]" type="number" placeholder=""> {{producto.nombre}}                        
+                            <div class="maq mb-3" v-for="producto in productos">
+                                <input v-model.number="producto.cantidad"  type="number" placeholder="" > {{producto.nombre}}                        
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
