@@ -1,0 +1,24 @@
+{
+  "name": "flash24",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@bitbucket.org/germanschurrer/flash24.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://bitbucket.org/germanschurrer/flash24/issues"
+  },
+  "homepage": "https://bitbucket.org/germanschurrer/flash24#readme",
+  "dependencies": {
+    "express": "^4.18.1",
+    "firebase": "^9.9.1",
+    "mongoose": "^6.5.0"
+  }
+}
