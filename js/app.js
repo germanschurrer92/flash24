@@ -1,5 +1,7 @@
 // Import the functions you need from the SDKs you need
-import { initializeApp } from "https://www.gstatic.com/firebasejs/9.2.0/firebase-app.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-app.js";
+import { getFirestore, collection, getDocs, addDoc,Timestamp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore.js";
+
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
 
@@ -17,6 +19,14 @@ const firebaseConfig = {
 
 // Initialize Firebase
 const appFB = initializeApp(firebaseConfig);
+const db = getFirestore(appFB);
+const maquinas = collection(db, 'maquinas');
+const maqSnapshot = await getDocs(maquinas);
+const productos = collection(db, 'productos');
+const prodSnapshot = await getDocs(productos);
+const cargaProductos = collection(db, 'cargaProductos');
+const prodCargar = await getDocs(cargaProductos);
+
 
 const vueApp = new Vue({
     el: '#app',
@@ -24,109 +34,15 @@ const vueApp = new Vue({
         titulo: 'Flash 24 Vending Group',
         activeTab: 1,
         display: 'redbox',
-        maquinas: [
-            {
-                id: 1,
-                nombre:'Snack10',
-                lugar: 'ELP',
-                productos: [
-                    {
-                        id: 1,
-                        nombre: "9 de Oro Salada",
-                        proveedor: "Lucas",
-                        cantidad: 0
-                    },
-                    {
-                        id: 2,
-                        nombre: "Sandwich Suprema",
-                        proveedor: "Keila",
-                        cantidad: 0
-                    },
-                    {
-                        id: 3,
-                        nombre: "Turron Mani",
-                        proveedor: "Arcor",
-                        cantidad: 0
-                    }
-                ]
-            },
-            {
-                id:2,
-                nombre:'Mixta',
-                lugar: 'Lario',
-                productos: [
-                    {
-                        id: 1,
-                        nombre: "9 de Oro Salada",
-                        proveedor: "Lucas",
-                        cantidad: 0
-                    },
-                    {
-                        id: 2,
-                        nombre: "Sandwich Suprema",
-                        proveedor: "Keila",
-                        cantidad: 0
-                    },
-                    {
-                        id: 3,
-                        nombre: "Turron Mani",
-                        proveedor: "Arcor",
-                        cantidad: 0
-                    }
-                ]
-            },
-            {
-                id:3,
-                nombre:'Saeco',
-                lugar: 'Lario',
-                productos: [
-                    {
-                        id: 1,
-                        nombre: "9 de Oro Salada",
-                        proveedor: "Lucas",
-                        cantidad: 0
-                    },
-                    {
-                        id: 2,
-                        nombre: "Sandwich Suprema",
-                        proveedor: "Keila",
-                        cantidad: 0
-                    },
-                    {
-                        id: 3,
-                        nombre: "Turron Mani",
-                        proveedor: "Arcor",
-                        cantidad: 0
-                    }
-                ]
-            }
-        ],
-        productos: [
-            {
-                id: 1,
-                nombre: "9 de Oro Salada",
-                proveedor: "Lucas",
-                cantidad: 0
-            },
-            {
-                id: 2,
-                nombre: "Sandwich Suprema",
-                proveedor: "Keila",
-                cantidad: 0
-            },
-            {
-                id: 3,
-                nombre: "Turron Mani",
-                proveedor: "Arcor",
-                cantidad: 0
-            }
-        ],
-        
+        maquinas: [],
+        productos: [],        
         selectedMaq: null
     },
-    methods: {
-        
-        
+    mounted() {
+        this.maquinas = maqSnapshot.docs.map(doc => doc.data());
+        this.productos = prodSnapshot.docs.map(doc => doc.data());
+    },
+    methods: {   
         maqClick: function (index) {
             var maq = this.maquinas[index];
             this.selectedMaq = maq;
@@ -135,16 +51,15 @@ const vueApp = new Vue({
         
         saveProductsAdded: function () {
             
-            console.log(appFB);
-            
             this.productos.forEach( prod => {
-                if(prod.cantidad < 0 || prod.cantidad === "")        return; 
-                
-                var prodASumar = this.selectedMaq.productos.find(e => e.id == prod.id);
-                prodASumar.cantidad += prod.cantidad;
-                prod.cantidad = 0; 
-                console.log(prodASumar.cantidad) ;
-                
+                if(prod.sumar < 0 || prod.sumar === "" || typeof prod.sumar === 'undefined') return;    
+                console.log(prod.sumar);
+                const docRef = addDoc(collection(db, "cargaProductos"), {
+                    idProducto: prod.id.toString(),
+                    idMaquina: this.selectedMaq.id.toString(),
+                    cantidad: prod.sumar,
+                    fecha: Timestamp.fromDate(new Date())
+                });
                 //oculto el modal
                 $('#addProductModal').modal('hide');              
             });
