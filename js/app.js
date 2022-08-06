@@ -1,6 +1,6 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-app.js";
-import { getFirestore, collection, getDocs, addDoc,Timestamp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore.js";
+import { getFirestore, collection, getDocs, addDoc,Timestamp, doc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -21,7 +21,7 @@ const firebaseConfig = {
 const appFB = initializeApp(firebaseConfig);
 const db = getFirestore(appFB);
 const maquinas = collection(db, 'maquinas');
-const maqSnapshot = await getDocs(maquinas);
+const maqDocs = await getDocs(maquinas);
 const productos = collection(db, 'productos');
 const prodSnapshot = await getDocs(productos);
 const cargaProductos = collection(db, 'cargaProductos');
@@ -36,34 +36,94 @@ const vueApp = new Vue({
         display: 'redbox',
         maquinas: [],
         productos: [],        
-        selectedMaq: null
+        selectedMaq: {
+            nombre:'',
+            lugar:''            
+        },
+        lugarMaq: '',
+        nombreMaq: '',
+        nombreProd: '',
+        proveedorProd: ''
     },
-    mounted() {
-        this.maquinas = maqSnapshot.docs.map(doc => doc.data());
+    async mounted() {
+        
+        this.maquinas = maqDocs.docs.map(doc => doc.data());
         this.productos = prodSnapshot.docs.map(doc => doc.data());
+                
     },
     methods: {   
+        setTab: function (index) {
+            this.activeTab = index;
+        },
         maqClick: function (index) {
-            var maq = this.maquinas[index];
-            this.selectedMaq = maq;
+            
+            //this.productos = prodSnapshot.docs.map(doc => doc.data()); // para que no muestre nuevamente los nros de cada producto
+            //this.selectedMaq = this.maquinas[index];
+            this.selectedMaq = this.maquinas[index];
+
+            maqDocs.forEach((doc) => {
+                if(doc.data().nombre === this.maquinas[index].nombre) {
+                    this.selectedMaqId = doc.id;
+                    console.log( this.selectedMaqId);
+                }
+            });
+
             $('#addProductModal').modal();
         },
+
+        addMaqClick: function () {
+            // var maq = this.maquinas[index];
+            // this.selectedMaq = maq;
+            $('#addMaquinaModal').modal();
+        },
         
-        saveProductsAdded: function () {
+        addNewProdClick: function () {
+            // var maq = this.maquinas[index];
+            // this.selectedMaq = maq;
+            $('#addProductoModal').modal();
+        },
+        
+        saveProductsAdded: async function () {
             
-            this.productos.forEach( prod => {
+            this.productos.forEach( async prod => {
                 if(prod.sumar < 0 || prod.sumar === "" || typeof prod.sumar === 'undefined') return;    
                 console.log(prod.sumar);
-                const docRef = addDoc(collection(db, "cargaProductos"), {
-                    idProducto: prod.id.toString(),
-                    idMaquina: this.selectedMaq.id.toString(),
+                const docRef = await addDoc(collection(db, "cargaProductos"), {
+                    idProducto: prod.id.toString(), // tengo que poner el ID que le asigna FB
+                    idMaquina: this.selectedMaqId, 
                     cantidad: prod.sumar,
                     fecha: Timestamp.fromDate(new Date())
                 });
+                
                 //oculto el modal
-                $('#addProductModal').modal('hide');              
+                $('#addProductModal').modal('hide');
+                this.$mount(); // llamo al método mounted()  
             });
         },
+        addMaq: async function(){
+            //ver como consultar el máximo ID de maquina.
+            await addDoc(collection(db, "maquinas"), {
+                activo: true, 
+                lugar: this.lugarMaq,
+                nombre: this.nombreMaq
+            });
+            
+            //oculto el modal
+            $('#addMaquinaModal').modal('hide');
+            window.location.reload();            
+        },
+
+        addNewProd: async function(){
+            //ver como consultar el máximo ID de maquina.
+            await addDoc(collection(db, "productos"), {
+                nombre: this.nombreProd,
+                proveedor: this.proveedorProd
+            });
+            
+            //oculto el modal
+            $('#addProductoModal').modal('hide');
+            window.location.reload();            
+        }
         
         
     }
