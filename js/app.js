@@ -1,6 +1,7 @@
 // Import the functions you need from the SDKs you need
 import { initializeApp } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-app.js";
 import { getFirestore, collection, getDocs, addDoc,Timestamp, doc, query, orderBy, limit } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-firestore.js";
+import { getAuth } from "https://www.gstatic.com/firebasejs/9.9.1/firebase-auth.js";
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -25,13 +26,11 @@ const maqDocs = await getDocs(maquinas);
 const productos = collection(db, 'productos');
 const prodDocs = await getDocs(productos);
 const cargaProductos = collection(db, 'cargaProductos');
+const auth = getAuth();
 
 const vueApp = new Vue({
     el: '#app',
-    data: { 
-        titulo: 'Flash 24 Vending Group',
-        activeTab: 1,
-        display: 'redbox',
+    data: {
         maquinas: [],
         productos: [],        
         selectedMaq: {
@@ -42,10 +41,24 @@ const vueApp = new Vue({
         nombreMaq: '',
         nombreProd: '',
         proveedorProd: '',
-        loading: true
+
+        //gestión de pantallas
+        loggedInUser: false,
+        loading: true,
+        activeTab: 1,
+        openMenu: false,
+        activeForm: 'login',
+
+        form: {
+			email: '',
+			password: '',
+			confirm: '',
+			nickname: '',
+			avatar: '',
+			reason: '',
+		}
     },
     async mounted() {
-
         this.maquinas = maqDocs.docs.map(doc => doc.data());
         //this.productos = prodDocs.docs.map(doc => doc.data()); 
         
@@ -96,8 +109,7 @@ const vueApp = new Vue({
         },
         
         //metodo para agregar  a una máquina
-        saveProductsAdded: async function () {
-            
+        saveProductsAdded: async function () {            
             this.productos.forEach( async prod => {
                 if(prod.sumar < 0 || prod.sumar === "" || typeof prod.sumar === 'undefined') return;    
                 console.log(prod.sumar);
@@ -139,6 +151,17 @@ const vueApp = new Vue({
             //oculto el modal
             $('#addProductoModal').modal('hide');
             window.location.reload();            
-        }      
+        },
+
+        register: async function(){
+            console.log('register');
+        },
+        login: async function(){
+            console.log('login');
+        },
+        logout: async function(){
+            console.log('logout');
+        }
+
     }
 })
