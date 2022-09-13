@@ -1,49 +1,66 @@
 <!DOCTYPE html>
 <html lang="es">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-    
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    
-    <link rel="stylesheet" href="./css/app.css?nocached=4">
-    
-    
-    
-    <title>Inicio</title>
-    
-    
-    
-</head>
-<body>
-    
-    <div id="app">
-        <div class="loader-overlay" v-if="loading">
-			<div class="loader"></div>
-				Recuperando datos
-			
-		</div>
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/css/bootstrap.min.css"
+        integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
 
-        <div class="auth" >
-            <nav class="navbar navbar-light bg-light fixed-top">
-                <a class="navbar-brand" href="#">
-                    <img src="img/logo.png" width="40" height="40" class="d-inline-block align-top mr-3" alt="">
-                    <strong>FLASH</strong>24 Vending Group
-                </a>                
+    <link rel="stylesheet" href="./css/app.css?nocached=4">
+
+    <title>Inicio</title>
+
+</head>
+
+<body>
+
+    <div id="app">
+        <div class="loader-overlay" v-if="loading && loggedInUser">
+            <div class="loader"></div>
+            Recuperando datos
+        </div>
+
+        <!--Con usuario Logueado-->
+        <div class="auth" v-if="loggedInUser">
+            <nav class="navbar navbar-light bg-light">
+                <div class="col-12">
+                    <div class="text-center mb-3">
+                        <a class="navbar-brand" href="#">
+                            <img src="img/logo.png" width="40" height="40" class="d-inline-block align-top mr-3" alt="">
+                            <strong>FLASH</strong>24 Vending Group
+                        </a>
+                        <button class="navbar-toggler ml-auto float-xs-right" type="button"
+                            v-on:click="openMenu=!openMenu">
+                            <i class="fas fa-ellipsis-v"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="collapse navbar-collapse" :class="{show: openMenu}">
+                    <ul class="navbar-nav mr-auto">
+                        <li>
+                            <span class="navbar__email">{{loggedInUser.email}}</span>
+                        </li>
+                        <li class="nav-item active">
+                            <a class="nav-link" href="#" v-on:click="logout">Salir</a>
+                        </li>
+                    </ul>
+                </div>
             </nav>
-            
+
+
             <div class="tabs mb-3">
                 <div class="tabs__item" v-on:click="setTab(1)" :class="{active: activeTab===1}">Maquinas</div>
                 <div class="tabs__item" v-on:click="setTab(2)" :class="{active: activeTab===2}">Productos</div>
             </div>
-            
             <div class="container-fluid" v-if="activeTab===1">
                 <h3>Maquinas</h3>
                 <div class="maq mb-3" v-on:click="addMaqClick()">
                     <span class="maq__info-name">
-                        <span class="badge badge-pill badge-danger"> + </span> 
-                        Agregar Nueva                        
+                        <span class="badge badge-pill badge-danger"> + </span>
+                        Agregar Nueva
                     </span>
                 </div>
                 <div class="maq mb-3" v-for="(maquina, id) in maquinas" v-on:click="maqClick(id)">
@@ -52,7 +69,7 @@
                             {{maquina.lugar}} - {{maquina.nombre}}
                         </span>
                         <div class="stats">
-                            <span class="badge badge-pill badge-success"> Habilitada </span>                            
+                            <span class="badge badge-pill badge-success"> Habilitada </span>
                         </div>
                     </div>
                 </div>
@@ -62,8 +79,8 @@
                 <h3>Productos</h3>
                 <div class="maq mb-3" v-on:click="addNewProdClick()">
                     <span class="maq__info-name">
-                        <span class="badge badge-pill badge-danger"> + </span> 
-                        Agregar Nuevo                        
+                        <span class="badge badge-pill badge-danger"> + </span>
+                        Agregar Nuevo
                     </span>
                 </div>
                 <div class="maq mb-3" v-for="(producto, id) in productos">
@@ -71,18 +88,90 @@
                         <span class="maq__info-name">
                             {{producto.nombre}}
                             <span class="badge badge-pill badge-success"> {{producto.proveedor}} </span>
-                        </span>                        
+                        </span>
+                    </div>
+                </div>
+            </div>
+            
+        </div>
+
+
+        <!-- Login/Register -->
+        <div class="login-page" v-if="!loggedInUser">
+            <div class="row justify-content-center">
+                <div class="col-11">
+                    <div class="text-center mb-3 bg-light">
+                        <a class="navbar-brand" href="#">
+                            <img src="img/logo.png" width="40" height="40" class="d-inline-block align-top mr-3" alt="">
+                            <strong>FLASH</strong>24 Vending Group
+                        </a>
+                    </div>
+                    <!--
+                    <div>
+                        <div class="btn-group btn-block" role="group" aria-label="Basic example">
+                            <button type="button" class="btn btn-light" style="width: 50%;"
+                                v-on:click="activeForm='login'">Login</button>
+
+                                <button type="button" class="btn btn-light" style="width: 50%;"
+                                v-on:click="activeForm='signup'">Sign Up</button>
+                            </div>
+                        </div>
+                    -->
+                    <div class="carad" v-if="activeForm==='login'">
+                        <div class="card-body">
+                            <h3 class="text mb-3"><strong>Ingresar</strong></h3>
+                            <form>
+                                <div class="form-group">
+                                    <input name="email" v-model="form.email" type="email"
+                                        class="form-control form-control-lg" placeholder="Email">
+                                </div>
+                                <div class="form-group">
+                                    <input name="password" v-model="form.password" type="password"
+                                        class="form-control form-control-lg" placeholder="Password">
+                                </div>
+                                <div class="d-flex justify-content-end mt-4">
+                                    <button @click="login" type="button" class="btn btn-light btn-lg">Login</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                    <div class="carad" v-else>
+                        <div class="card-body">
+                            <h3 class="text-white mb-3"><strong>Crear Cuenta</strong></h3>
+                            <form>
+                                <div class="form-group">
+                                    <input name="email" v-model="form.email" autocomplete="off" type="email"
+                                        class="form-control form-control-lg" placeholder="Email">
+                                </div>
+                                <div class="form-group">
+                                    <input name="password" v-model="form.password" autocomplete="off" type="password"
+                                        class="form-control form-control-lg" placeholder="Password">
+                                </div>
+                                <div class="form-group">
+                                    <input name="confirm" v-model="form.confirm" autocomplete="off" type="password"
+                                        class="form-control form-control-lg" placeholder="Confirm Password">
+                                </div>
+                                <div class="form-group">
+                                    <input name="username" v-model="form.nickname" autocomplete="off" type="text"
+                                        class="form-control form-control-lg" placeholder="Nickname">
+                                </div>
+                                <div class="d-flex justify-content-end">
+                                    <button @click="register" type="button" class="btn btn-light btn-lg">Crear</button>
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
-        
+
         <!-- Modals -->
         <div id="addProductModal" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title">Poniendo Productos en {{selectedMaq.nombre}} de {{selectedMaq.lugar}}</h5> 
+                        <h5 class="modal-title">Poniendo Productos en {{selectedMaq.nombre}} de {{selectedMaq.lugar}}
+                        </h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                             <span aria-hidden="true">&times;</span>
                         </button>
@@ -90,19 +179,20 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="maq mb-3" v-for="producto in productos">
-                                <input v-model.number="producto.sumar"  type="number" placeholder="" > {{producto.nombre}}                        
+                                <input v-model.number="producto.sumar" type="number" placeholder=""> {{producto.nombre}}
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
-                                <button type="button" class="btn btn-primary" @click="saveProductsAdded">Guardar</button>
-                            </div>             
-                            
+                                <button type="button" class="btn btn-primary"
+                                    @click="saveProductsAdded">Guardar</button>
+                            </div>
+
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
-        </div>       
+        </div>
         <div id="addMaquinaModal" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
@@ -115,22 +205,22 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="maq mb-3">
-                                <input v-model="lugarMaq"  type="text" placeholder="" >Lugar                        
+                                <input v-model="lugarMaq" type="text" placeholder="">Lugar
                             </div>
                             <div class="maq mb-3">
-                                <input v-model="nombreMaq"  type="text" placeholder="" >Nombre Maquina                                                         
+                                <input v-model="nombreMaq" type="text" placeholder="">Nombre Maquina
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="button" class="btn btn-primary" @click="addMaq">Guardar</button>
-                            </div>             
-                            
+                            </div>
+
                         </div>
-                        
+
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
 
         <div id="addProductoModal" class="modal" tabindex="-1" role="dialog">
             <div class="modal-dialog modal-dialog-centered" role="document">
@@ -144,34 +234,39 @@
                     <div class="modal-body">
                         <div class="form-group">
                             <div class="maq mb-3">
-                                <input v-model="nombreProd"  type="text" placeholder="" >Nombre                        
+                                <input v-model="nombreProd" type="text" placeholder="">Nombre
                             </div>
                             <div class="maq mb-3">
-                                <input v-model="proveedorProd"  type="text" placeholder="" >Proveedor                                                                                         
+                                <input v-model="proveedorProd" type="text" placeholder="">Proveedor
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
                                 <button type="button" class="btn btn-primary" @click="addNewProd">Guardar</button>
-                            </div>             
-                            
+                            </div>
                         </div>
-                        
                     </div>
                 </div>
             </div>
-        </div>  
+        </div>
     </div>
-    
-    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script> 
-    
-    
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
+        integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js"
+        integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js"
+        integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+
+
     <script type="module" src="js/app.js?nocached=6"></script>
-    
-    
-    
-    
+
+
+
+
 </body>
+
 </html>

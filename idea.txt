@@ -1,11 +1,19 @@
-Descripción de la idea:
+Backlog:
+- Cargar stock en máquina a una fecha para poder reportar consumos desde una fecha a otra:
+    StockFecha1 - StockFecha2 + Reposiciones 
+         10 alf -     10 alf  +  5 alf + 6 alf ...
+- Reportes de Consumos por Máquina, ordenado por Productos
+- Reporte de Consumo por Productos (en todas las locaciones)
+- Que pueda registrar recaudaciones
 
-Sistema para poder registrar la reposición que se hace en cada máquina vending.
-Que permita agregar una nueva locación
-Que pueda registrar recaudaciones
-
-Podríamos agregar a futuro gestión de precios
+- Agregar precio de venta para los productos y que se pueda modificar 
+    Tendríamos que agregar una tabla que guarde el histórico de precios para luego poder calcular ganancias
 
 
+Listo:
+- Sistema para poder registrar la reposición que se hace en cada máquina vending.
+- Login
+- Registrar reposición con persona
+- Que permita agregar una nueva locación
 
 
