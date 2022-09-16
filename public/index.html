@@ -123,11 +123,13 @@
                             <form>
                                 <div class="form-group">
                                     <input name="email" v-model="form.email" type="email"
-                                        class="form-control form-control-lg" placeholder="Email">
+                                        class="form-control form-control-lg" placeholder="Email"
+                                        v-on:keyup.enter="onEnterLogin">
                                 </div>
                                 <div class="form-group">
                                     <input name="password" v-model="form.password" type="password"
-                                        class="form-control form-control-lg" placeholder="Password">
+                                        class="form-control form-control-lg" placeholder="Password"
+                                        v-on:keyup.enter="onEnterLogin">
                                 </div>
                                 <div class="d-flex justify-content-end mt-4">
                                     <button @click="login" type="button" class="btn btn-light btn-lg">Login</button>
